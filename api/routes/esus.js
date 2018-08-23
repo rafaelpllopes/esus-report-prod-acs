@@ -3,23 +3,20 @@ const dao = require('../models/esus-dao');
 module.exports = app => {
     app.route('/producao')
         .get(async (req, res) => {
-            let { mes, ano, unidade } = req.query;
-            const dados = await dao.getProducaoUnidadePeriodo(mes, ano, unidade);
-            if (dados) {
-                res.status(200).json(dados);
-            } else {
-                res.status(401).json({ message: "Não encontrado" });
+            let { mes, ano, unidade, profissional } = req.query;
+            let dados;
+            if(unidade) {
+                dados = await dao.getProducaoUnidadePeriodo(mes, ano, unidade);
             }
-        });
 
-    app.route('/producao2')
-        .get(async (req, res) => {
-            let { mes, ano, profissional } = req.query;
-            const dados = await dao.getProducaoProfissionalPeriodo(mes, ano, profissional);
-            if (dados) {
+            if(profissional) {
+                dados = await dao.getProducaoProfissionalPeriodo(mes, ano, profissional);
+            }
+            
+            if (dados && dados.length > 0) {
                 res.status(200).json(dados);
             } else {
-                res.status(401).json({ message: "Não encontrado" });
+                res.status(404).json({ message: "Não encontrado" });
             }
         });
 
@@ -39,7 +36,7 @@ module.exports = app => {
             if (dados) {
                 res.status(200).json(dados);
             } else {
-                res.status(401).json({ message: "Não encontrado" });
+                res.status(404).json({ message: "Não encontrado" });
             }
         });
 }

@@ -1,7 +1,7 @@
+const path = require('path');
+
 module.exports = app => {
-    app.get('/', (req, res) => {
-        res.json({
-            status: 'API ok!'
-        })
+    app.all('/*', (req, res) => {
+        res.sendFile(path.resolve('public/esus-report/index.html'));
     });
 };

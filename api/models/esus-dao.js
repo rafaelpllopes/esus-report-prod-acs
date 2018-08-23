@@ -5,10 +5,10 @@ const dao = {};
 dao.getProducaoUnidadePeriodo = async (mes, ano, unidade) => {
     let query = {
         text: `SELECT
-        a.dt_ficha,
-        count(a.*),
-        e.no_equipe UNIDADE,
-        b.no_pessoa_fisica PROFISSIONAL
+        a.dt_ficha as data_ficha,
+        count(a.*) as quantidade,
+        e.no_equipe as unidade,
+        b.no_pessoa_fisica as profissional
         FROM
         tb_cds_ficha_visita_domiciliar as a,
         tb_pessoa_fisica as b,
@@ -65,7 +65,7 @@ dao.getProducaoProfissionalPeriodo = async (mes, ano, profissional) => {
 
 dao.getUnidades = async () => {
     let query = {
-        text: 'SELECT co_seq_equipe as id, no_equipe_filtro as unidade FROM tb_equipe'
+        text: 'SELECT co_seq_equipe as id, no_equipe_filtro as unidade FROM tb_equipe ORDER BY no_equipe_filtro'
     }
     return await db.query(query);
 };
@@ -75,7 +75,7 @@ dao.getProfissionais = async () => {
         text: `SELECT DISTINCT
         pf.nu_cpf as cpf, pf.nu_cns as cns, pf.no_pessoa_fisica as nome
         FROM tb_pessoa_fisica pf 
-        INNER JOIN tb_cds_prof pr ON pf.nu_cns = pr.nu_cns`
+        INNER JOIN tb_cds_prof pr ON pf.nu_cns = pr.nu_cns ORDER BY pf.no_pessoa_fisica`
     }
     return await db.query(query);
 };
