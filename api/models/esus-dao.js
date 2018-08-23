@@ -1,18 +1,8 @@
-const { Client } = require('pg');
-
-const client = new Client({
-    user: 'postgres',
-    host: '192.168.50.10',
-    database: 'esus',
-    password: 'esus',
-    port: 5433,
-});
+const db = require('../config/db');
 
 const dao = {};
 
 dao.getProducaoUnidadePeriodo = async (mes, ano, unidade) => {
-    await client.connect();
-
     let query = {
         text: `SELECT
         a.dt_ficha,
@@ -39,22 +29,17 @@ dao.getProducaoUnidadePeriodo = async (mes, ano, unidade) => {
         e.no_equipe`,
         values: [mes, ano, unidade]
     };
-
-    return client
-        .query(query)
-        .then(res => res.rows)
-        .catch(e => e.stack)
+    return await db.query(query);
 };
 
 dao.getProducaoProfissionalPeriodo = async (mes, ano, profissional) => {
-    await client.connect();
 
     let query = {
         text: `SELECT
-        a.dt_ficha,
-        count(a.*),
-        e.no_equipe UNIDADE,
-        b.no_pessoa_fisica PROFISSIONAL
+        a.dt_ficha as data_ficha,
+        count(a.*) as quantidade,
+        e.no_equipe unidade,
+        b.no_pessoa_fisica profissional
         FROM
         tb_cds_ficha_visita_domiciliar as a,
         tb_pessoa_fisica as b,
@@ -75,32 +60,24 @@ dao.getProducaoProfissionalPeriodo = async (mes, ano, profissional) => {
         e.no_equipe`,
         values: [mes, ano, profissional]
     };
-
-    return client
-        .query(query)
-        .then(res => res.rows)
-        .catch(e => e.stack)
+    return await db.query(query);
 };
 
 dao.getUnidades = async () => {
-    await client.connect();
-
-    return client
-            .query('SELECT co_seq_equipe as id, no_equipe_filtro as unidade FROM tb_equipe')
-            .then(res => res.rows)
-            .catch(e => e.stack)
+    let query = {
+        text: 'SELECT co_seq_equipe as id, no_equipe_filtro as unidade FROM tb_equipe'
+    }
+    return await db.query(query);
 };
 
 dao.getProfissionais = async () => {
-    await client.connect();
-
-    return client
-        .query(`SELECT DISTINCT
-         pf.nu_cpf, pf.nu_cns, pf.no_pessoa_fisica 
-         FROM tb_pessoa_fisica pf 
-         INNER JOIN tb_cds_prof pr ON pf.nu_cns = pr.nu_cns`)
-        .then(res => res.rows)
-        .catch(e => e.stack);
+    let query = {
+        text: `SELECT DISTINCT
+        pf.nu_cpf as cpf, pf.nu_cns as cns, pf.no_pessoa_fisica as nome
+        FROM tb_pessoa_fisica pf 
+        INNER JOIN tb_cds_prof pr ON pf.nu_cns = pr.nu_cns`
+    }
+    return await db.query(query);
 };
 
 module.exports = dao;
