@@ -1,0 +1,25 @@
+<h3 class="text-center text-uppercase">Produção</h3>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Data</th>
+        <th scope="col">Hora</th>
+        <th scope="col">Profissional</th>
+        <th scope="col">Ficha(s)</th>
+        <th scope="col">Unidade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producao of producoes, let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ producao.data_ficha | date:'dd/MM/yyyy' }}</td>
+        <td>{{ producao.data_ficha | date:'HH:mm' }}</td>
+        <td>{{ producao.profissional }}</td>
+        <td>{{ producao.quantidade }}</td>
+        <td>{{ producao.unidade }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

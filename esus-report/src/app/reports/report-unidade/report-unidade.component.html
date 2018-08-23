@@ -1,0 +1,36 @@
+<section *ngIf="(unidades$ | async) as unidades" class="container">
+  <h2 class="text-center text-uppercase">Produção por unidade</h2>
+  <form [formGroup]="unidadeForm" class="row">
+
+    <div class="form-group col-sm-12">
+      <label for="select-unidade">Unidade de Saúde</label>
+      <select formControlName="unidade" class="form-control" id="select-unidade">
+        <option disabled value="">Selecione uma unidade de saúde</option>
+        <option *ngFor="let unidade of unidades" [value]="unidade?.id">{{ unidade?.unidade | uppercase }}</option>
+      </select>
+    </div>
+
+    <div class="form-group col-sm-6">
+      <label for="select-ano">Ano</label>
+      <select formControlName="ano" class="form-control" id="select-ano">
+        <option disabled value="">Selecione um ano</option>
+        <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+      </select>
+    </div>
+
+    <div class="form-group col-sm-6">
+      <label for="select-mes">Mês</label>
+      <select formControlName="mes" class="form-control" id="select-mes">
+        <option disabled value="">Selecione um mês</option>
+        <option *ngFor="let mes of meses" [value]="mes?.codigo">{{ mes?.mes }}</option>
+      </select>
+    </div>
+
+    <div class="col-sm-12">
+      <button (click)="pesquisar()" [disabled]="unidadeForm.invalid" class="btn btn-primary btn-block">Pesquisar</button>
+    </div>
+  </form>
+</section>
+<section *ngIf="(producoes$ | async) as producoes" class="container-fluid">
+  <app-table-prod [producoes]="producoes"></app-table-prod>
+</section>
