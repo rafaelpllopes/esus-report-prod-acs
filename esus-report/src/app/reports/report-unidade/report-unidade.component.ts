@@ -1,7 +1,8 @@
-import { ReportsService } from './../reports.service';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { Observable } from 'rxjs';
+import { ReportsService } from '../reports.service';
 
 @Component({
   selector: 'report-unidade',
