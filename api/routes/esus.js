@@ -5,18 +5,33 @@ module.exports = app => {
         .get(async (req, res) => {
             let { mes, ano, unidade, profissional } = req.query;
             let dados;
-            if(unidade) {
-                dados = await dao.getProducaoUnidadePeriodo(mes, ano, unidade);
+            let erros = '';
+
+            if (!mes) {
+                erros += "mes, ";
+            } else if (!ano) {
+                erros += "ano, ";
+            } else if (!unidade && !profissional) {
+                erros += "unidade ou profissional ";
             }
 
-            if(profissional) {
-                dados = await dao.getProducaoProfissionalPeriodo(mes, ano, profissional);
-            }
-            
-            if (dados && dados.length > 0) {
-                res.status(200).json(dados);
+            if (erros) {
+                erros += "deve ser selecionado.";
+                res.status(404).json({ message: erros });
             } else {
-                res.status(404).json({ message: "Não encontrado" });
+                if (unidade) {
+                    dados = await dao.getProducaoUnidadePeriodo(mes, ano, unidade);
+                } else if (profissional) {
+                    dados = await dao.getProducaoProfissionalPeriodo(mes, ano, profissional);
+                } else {
+                    res.status(404).json({ message: "Parametro não enviado." });
+                }
+
+                if (dados && dados.length > 0) {
+                    res.status(200).json(dados);
+                } else {
+                    res.status(404).json({ message: "Nada encontrado." });
+                }
             }
         });
 
@@ -26,7 +41,7 @@ module.exports = app => {
             if (dados) {
                 res.status(200).json(dados);
             } else {
-                res.status(401).json({ message: "Não encontrado" });
+                res.status(401).json({ message: "Não encontrado." });
             }
         });
 
@@ -36,7 +51,7 @@ module.exports = app => {
             if (dados) {
                 res.status(200).json(dados);
             } else {
-                res.status(404).json({ message: "Não encontrado" });
+                res.status(404).json({ message: "Não encontrado." });
             }
         });
 }
